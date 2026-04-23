@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIMALAYAN 450 — DREAM TRACKER</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rust: #C84B2F;
+    --amber: #E8A030;
+    --cream: #F2EAD8;
+    --dark: #1A1208;
+    --brown: #3D2B1A;
+    --olive: #5C6145;
+    --smoke: #8C8272;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    font-family: 'Barlow Condensed', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 28px 32px 0;
+    position: relative;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--smoke);
+    line-height: 1.6;
+  }
+
+  .logo span { color: var(--rust); }
+
+  .date-badge {
+    text-align: right;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--smoke);
+    text-transform: uppercase;
+  }
+
+  .date-badge strong {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--amber);
+    letter-spacing: 1px;
+  }
+
+  /* Hero section */
+  .hero {
+    position: relative;
+    padding: 20px 32px 0;
+    overflow: hidden;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 12vw, 110px);
+    line-height: 0.88;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-title .line1 { color: var(--cream); }
+  .hero-title .line2 { color: var(--rust); -webkit-text-stroke: 0px; }
+  .hero-title .line3 {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--smoke);
+    opacity: 0.4;
+  }
+
+  /* Bike SVG illustration */
+  .bike-stage {
+    position: relative;
+    margin: -10px 0 0;
+    height: 280px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .bike-svg {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    animation: bikeFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 20px 40px rgba(200,75,47,0.3));
+  }
+
+  @keyframes bikeFloat {
+    0%, 100% { transform: translateY(0px) rotate(-0.5deg); }
+    50% { transform: translateY(-8px) rotate(0.5deg); }
+  }
+
+  /* Ground line */
+  .ground {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rust), var(--amber), var(--rust), transparent);
+    margin: 0 32px;
+    position: relative;
+    animation: groundPulse 3s ease-in-out infinite;
+  }
+
+  @keyframes groundPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* Days counter */
+  .counter-section {
+    padding: 32px 32px 0;
+  }
+
+  .counter-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--smoke);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .days-display {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .days-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 18vw, 140px);
+    line-height: 0.9;
+    color: var(--amber);
+    text-shadow: 0 0 60px rgba(232,160,48,0.4);
+    animation: numberGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes numberGlow {
+    0%, 100% { text-shadow: 0 0 40px rgba(232,160,48,0.3); }
+    50% { text-shadow: 0 0 80px rgba(232,160,48,0.6), 0 0 120px rgba(200,75,47,0.3); }
+  }
+
+  .days-unit {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(22px, 5vw, 36px);
+    color: var(--smoke);
+    letter-spacing: 3px;
+    padding-bottom: 14px;
+  }
+
+  /* Progress bar */
+  .progress-section {
+    padding: 24px 32px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--smoke);
+    text-transform: uppercase;
+  }
+
+  .progress-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--amber);
+  }
+
+  .progress-track {
+    height: 6px;
+    background: var(--brown);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rust), var(--amber));
+    border-radius: 3px;
+    transition: width 1s ease;
+    position: relative;
+    animation: progressShimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes progressShimmer {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+    100% { filter: brightness(1); }
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: var(--amber);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--amber);
+    animation: dotPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes dotPulse {
+    0%, 100% { box-shadow: 0 0 6px var(--amber); }
+    50% { box-shadow: 0 0 16px var(--amber), 0 0 30px rgba(232,160,48,0.5); }
+  }
+
+  /* Target date setter */
+  .target-section {
+    padding: 0 32px 24px;
+  }
+
+  .target-card {
+    background: var(--brown);
+    border: 1px solid rgba(232,160,48,0.15);
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .target-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--rust), var(--amber));
+  }
+
+  .target-card h3 {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--smoke);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .date-input {
+    flex: 1;
+    min-width: 160px;
+    background: var(--dark);
+    border: 1px solid rgba(232,160,48,0.25);
+    border-radius: 3px;
+    padding: 10px 14px;
+    color: var(--cream);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .date-input:focus { border-color: var(--amber); }
+
+  .set-btn {
+    background: linear-gradient(135deg, var(--rust), #a33d25);
+    border: none;
+    color: var(--cream);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    padding: 11px 22px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .set-btn:hover {
+    background: linear-gradient(135deg, var(--amber), var(--rust));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(200,75,47,0.4);
+  }
+
+  /* Daily affirmation */
+  .affirmation-section {
+    padding: 0 32px 24px;
+  }
+
+  .affirmation-card {
+    background: linear-gradient(135deg, rgba(92,97,69,0.2), rgba(61,43,26,0.4));
+    border: 1px solid rgba(92,97,69,0.3);
+    border-radius: 4px;
+    padding: 20px;
+    position: relative;
+  }
+
+  .quote-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: var(--olive);
+    line-height: 0.5;
+    margin-bottom: 10px;
+    opacity: 0.6;
+  }
+
+  .affirmation-text {
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    color: var(--cream);
+    line-height: 1.6;
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .affirmation-sub {
+    margin-top: 12px;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+
+  /* Notification bell */
+  .notif-section {
+    padding: 0 32px 32px;
+  }
+
+  .notif-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(232,160,48,0.3);
+    color: var(--cream);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    padding: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .notif-btn:hover {
+    background: rgba(232,160,48,0.08);
+    border-color: var(--amber);
+    box-shadow: 0 0 30px rgba(232,160,48,0.1);
+  }
+
+  .notif-btn.active {
+    background: rgba(200,75,47,0.15);
+    border-color: var(--rust);
+    color: var(--amber);
+  }
+
+  .bell-icon {
+    font-size: 20px;
+    animation: bellRing 4s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes bellRing {
+    0%, 90%, 100% { transform: rotate(0deg); }
+    92% { transform: rotate(15deg); }
+    94% { transform: rotate(-15deg); }
+    96% { transform: rotate(10deg); }
+    98% { transform: rotate(-5deg); }
+  }
+
+  /* Specs strip */
+  .specs {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin: 0 32px 32px;
+    overflow-x: auto;
+  }
+
+  .spec-item {
+    flex: 1;
+    min-width: 80px;
+    padding: 14px 12px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .spec-item:last-child { border-right: none; }
+
+  .spec-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--amber);
+    display: block;
+  }
+
+  .spec-key {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--smoke);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--brown);
+    border: 1px solid var(--amber);
+    border-radius: 4px;
+    padding: 14px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--cream);
+    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--brown); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">ROYAL ENFIELD<br><span>HIMALAYAN 450</span><br>DREAM TRACKER</div>
+  <div class="date-badge">
+    <span id="todayDate">—</span>
+    <strong id="dayName">—</strong>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-title">
+    <div class="line1">MY</div>
+    <div class="line2">DREAM</div>
+    <div class="line3">MACHINE</div>
+  </div>
+</div>
+
+<!-- SVG Bike Illustration -->
+<div class="bike-stage">
+  <svg class="bike-svg" viewBox="0 0 800 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Shadow -->
+    <ellipse cx="400" cy="320" rx="220" ry="14" fill="rgba(0,0,0,0.4)"/>
+
+    <!-- Rear wheel -->
+    <circle cx="220" cy="270" r="80" stroke="#3D2B1A" stroke-width="18"/>
+    <circle cx="220" cy="270" r="80" stroke="#C84B2F" stroke-width="4" stroke-dasharray="8 6"/>
+    <circle cx="220" cy="270" r="60" stroke="#5C6145" stroke-width="3" stroke-dasharray="4 8"/>
+    <circle cx="220" cy="270" r="28" fill="#1A1208" stroke="#E8A030" stroke-width="3"/>
+    <!-- Spokes rear -->
+    <line x1="220" y1="200" x2="220" y2="340" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="150" y1="270" x2="290" y2="270" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="171" y1="221" x2="269" y2="319" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="269" y1="221" x2="171" y2="319" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- Front wheel -->
+    <circle cx="580" cy="270" r="80" stroke="#3D2B1A" stroke-width="18"/>
+    <circle cx="580" cy="270" r="80" stroke="#C84B2F" stroke-width="4" stroke-dasharray="8 6"/>
+    <circle cx="580" cy="270" r="60" stroke="#5C6145" stroke-width="3" stroke-dasharray="4 8"/>
+    <circle cx="580" cy="270" r="28" fill="#1A1208" stroke="#E8A030" stroke-width="3"/>
+    <!-- Spokes front -->
+    <line x1="580" y1="200" x2="580" y2="340" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="510" y1="270" x2="650" y2="270" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="531" y1="221" x2="629" y2="319" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+    <line x1="629" y1="221" x2="531" y2="319" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- Chain stay -->
+    <line x1="220" y1="270" x2="380" y2="220" stroke="#5C6145" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Main frame -->
+    <path d="M 220 270 L 340 150 L 490 140 L 580 270" stroke="#C84B2F" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 340 150 L 380 270" stroke="#8C8272" stroke-width="7" stroke-linecap="round"/>
+    <path d="M 490 140 L 440 270" stroke="#8C8272" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- Seat tube -->
+    <line x1="380" y1="195" x2="380" y2="145" stroke="#5C6145" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Seat -->
+    <path d="M 320 145 Q 370 130 430 142 Q 420 155 310 158 Z" fill="#3D2B1A" stroke="#5C6145" stroke-width="2"/>
+    <path d="M 320 145 Q 370 128 430 142" stroke="#8C8272" stroke-width="1.5" opacity="0.6"/>
+
+    <!-- Tank -->
+    <path d="M 360 155 Q 400 120 480 130 Q 500 140 490 165 Q 440 170 360 165 Z" fill="#2A1F12" stroke="#C84B2F" stroke-width="2.5"/>
+    <!-- Tank highlight -->
+    <path d="M 375 148 Q 415 130 470 137" stroke="#E8A030" stroke-width="1.5" opacity="0.5" fill="none"/>
+
+    <!-- Engine block -->
+    <rect x="340" y="195" width="110" height="65" rx="6" fill="#1F1810" stroke="#3D2B1A" stroke-width="2"/>
+    <rect x="355" y="205" width="35" height="20" rx="3" fill="#3D2B1A" stroke="#5C6145" stroke-width="1"/>
+    <rect x="400" y="205" width="35" height="20" rx="3" fill="#3D2B1A" stroke="#5C6145" stroke-width="1"/>
+    <!-- Fins -->
+    <line x1="343" y1="210" x2="343" y2="250" stroke="#E8A030" stroke-width="1" opacity="0.4"/>
+    <line x1="348" y1="208" x2="348" y2="252" stroke="#E8A030" stroke-width="1" opacity="0.3"/>
+
+    <!-- Exhaust -->
+    <path d="M 350 255 Q 280 265 240 270 Q 230 274 228 280" stroke="#8C8272" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M 350 255 Q 280 265 240 270 Q 230 274 228 280" stroke="#5C6145" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+    <!-- Fork / front suspension -->
+    <line x1="520" y1="155" x2="565" y2="270" stroke="#C84B2F" stroke-width="9" stroke-linecap="round"/>
+    <line x1="530" y1="155" x2="575" y2="270" stroke="#8C8272" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Headlight -->
+    <circle cx="535" cy="148" r="22" fill="#1A1208" stroke="#E8A030" stroke-width="2.5"/>
+    <circle cx="535" cy="148" r="14" fill="#2A2010" stroke="#E8A030" stroke-width="1"/>
+    <!-- Light beam -->
+    <path d="M 555 142 L 700 110 M 557 150 L 710 150 M 555 158 L 695 190" stroke="#E8A030" stroke-width="1" opacity="0.25"/>
+
+    <!-- Handlebars -->
+    <path d="M 510 138 Q 495 120 470 118 Q 450 118 448 130" stroke="#8C8272" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <circle cx="449" cy="132" r="6" fill="#3D2B1A" stroke="#5C6145" stroke-width="2"/>
+    <circle cx="512" cy="140" r="6" fill="#3D2B1A" stroke="#5C6145" stroke-width="2"/>
+
+    <!-- Windscreen -->
+    <path d="M 510 138 Q 530 110 545 105 Q 540 125 535 138" fill="rgba(232,160,48,0.08)" stroke="rgba(232,160,48,0.3)" stroke-width="1.5"/>
+
+    <!-- Rear rack -->
+    <rect x="295" y="140" width="65" height="10" rx="3" fill="#3D2B1A" stroke="#5C6145" stroke-width="1.5"/>
+
+    <!-- RE logo on tank -->
+    <text x="415" y="148" font-family="serif" font-size="11" fill="#E8A030" opacity="0.7" text-anchor="middle">RE</text>
+  </svg>
+</div>
+
+<div class="ground"></div>
+
+<!-- Days Counter -->
+<div class="counter-section">
+  <div class="counter-label">↗ Days Until Your Ride</div>
+  <div class="days-display">
+    <span class="days-number" id="daysCount">—</span>
+    <span class="days-unit">DAYS<br>TO GO</span>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-section">
+  <div class="progress-header">
+    <span class="progress-label">Journey Progress</span>
+    <span class="progress-pct" id="progressPct">0%</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+</div>
+
+<!-- Target Date Setter -->
+<div class="target-section">
+  <div class="target-card">
+    <h3>Set Your Target Date</h3>
+    <div class="input-row">
+      <input type="date" class="date-input" id="targetDate" />
+      <button class="set-btn" onclick="setTarget()">SET GOAL</button>
+    </div>
+    <div id="targetDisplay" style="margin-top:12px; font-size:13px; color: var(--smoke); letter-spacing:1px;"></div>
+  </div>
+</div>
+
+<!-- Daily Affirmation -->
+<div class="affirmation-section">
+  <div class="affirmation-card">
+    <div class="quote-mark">"</div>
+    <div class="affirmation-text" id="affirmationText">Every day you save, every day you work — brings you one revolution closer to the mountains.</div>
+    <div class="affirmation-sub" id="affirmationDay">Day 1 of Your Journey</div>
+  </div>
+</div>
+
+<!-- Specs Strip -->
+<div class="specs">
+  <div class="spec-item">
+    <span class="spec-val">452cc</span>
+    <span class="spec-key">Engine</span>
+  </div>
+  <div class="spec-item">
+    <span class="spec-val">40 HP</span>
+    <span class="spec-key">Power</span>
+  </div>
+  <div class="spec-item">
+    <span class="spec-val">40 Nm</span>
+    <span class="spec-key">Torque</span>
+  </div>
+  <div class="spec-item">
+    <span class="spec-val">196 KG</span>
+    <span class="spec-key">Weight</span>
+  </div>
+  <div class="spec-item">
+    <span class="spec-val">220 MM</span>
+    <span class="spec-key">Ground</span>
+  </div>
+</div>
+
+<!-- Notification Button -->
+<div class="notif-section">
+  <button class="notif-btn" id="notifBtn" onclick="toggleNotifications()">
+    <span class="bell-icon">🔔</span>
+    ENABLE DAILY REMINDERS
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const AFFIRMATIONS = [
+    "Every rupee saved is a kilometre earned on the Himalayan.",
+    "The mountains are waiting. Your 450 is waiting. Keep going.",
+    "Not just a bike — it's freedom. You're almost there.",
+    "Rain, dust, altitude — built for all of it. So are you.",
+    "The passes don't care about shortcuts. Neither do you.",
+    "Adventure isn't bought in a day. It's built, day by day.",
+    "Every morning you wake up, you're closer to that saddle.",
+    "Spiti, Leh, Ziro — all of it, on your Himalayan 450.",
+    "The road doesn't wait. But your dream is worth the wait.",
+    "Every day you hustle is a day the 450 gets closer.",
+    "Wild roads deserve a wild machine. Yours is coming.",
+    "The best journeys begin with a dream. You're already on yours.",
+  ];
+
+  let notifEnabled = false;
+  let notifInterval = null;
+
+  function updateDate() {
+    const now = new Date();
+    const dayNames = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+    const monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    document.getElementById('todayDate').textContent = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    document.getElementById('dayName').textContent = dayNames[now.getDay()];
+  }
+
+  function getDaysFromStorage() {
+    return parseInt(localStorage.getItem('himalayan_target_days') || '0');
+  }
+
+  function getTargetDate() {
+    return localStorage.getItem('himalayan_target_date') || null;
+  }
+
+  function getStartDate() {
+    return localStorage.getItem('himalayan_start_date') || null;
+  }
+
+  function setTarget() {
+    const input = document.getElementById('targetDate').value;
+    if (!input) { showToast('⚠ Please pick a target date!'); return; }
+
+    const target = new Date(input);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (target <= today) { showToast('⚠ Set a future date, rider!'); return; }
+
+    localStorage.setItem('himalayan_target_date', input);
+    if (!getStartDate()) {
+      localStorage.setItem('himalayan_start_date', tomorrow.toISOString().split('T')[0]);
+    }
+
+    updateCounter();
+    showToast('🏔 Goal locked in! Ride on!');
+  }
+
+  function updateCounter() {
+    const targetStr = getTargetDate();
+    const startStr = getStartDate();
+
+    if (!targetStr) {
+      document.getElementById('daysCount').textContent = '?';
+      document.getElementById('progressPct').textContent = '0%';
+      document.getElementById('progressFill').style.width = '0%';
+      document.getElementById('targetDisplay').textContent = 'Set your target purchase date above ↑';
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const target = new Date(targetStr);
+    target.setHours(0,0,0,0);
+
+    const start = startStr ? new Date(startStr) : tomorrow;
+
+    const daysLeft = Math.max(0, Math.ceil((target - tomorrow) / (1000 * 60 * 60 * 24)));
+    const totalDays = Math.ceil((target - start) / (1000 * 60 * 60 * 24));
+    const elapsed = Math.ceil((today - start) / (1000 * 60 * 60 * 24));
+    const pct = totalDays > 0 ? Math.min(100, Math.max(0, Math.round((elapsed / totalDays) * 100))) : 0;
+
+    document.getElementById('daysCount').textContent = daysLeft === 0 ? 'TODAY!' : daysLeft;
+
+    document.getElementById('progressPct').textContent = pct + '%';
+    setTimeout(() => {
+      document.getElementById('progressFill').style.width = pct + '%';
+    }, 300);
+
+    const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('targetDisplay').textContent = 
+      daysLeft === 0 ? '🏆 Today is the day! Ride free!' :
+      `Target: ${target.toLocaleDateString('en-IN', opts)} · ${daysLeft} days from tomorrow`;
+
+    // Affirmation
+    const idx = Math.floor(Date.now() / 86400000) % AFFIRMATIONS.length;
+    document.getElementById('affirmationText').textContent = AFFIRMATIONS[idx];
+
+    const dayNum = elapsed > 0 ? elapsed : 1;
+    document.getElementById('affirmationDay').textContent = `Day ${dayNum} of Your Journey`;
+  }
+
+  function toggleNotifications() {
+    if (!('Notification' in window)) {
+      showToast('⚠ Notifications not supported in this browser');
+      return;
+    }
+
+    if (notifEnabled) {
+      notifEnabled = false;
+      clearInterval(notifInterval);
+      document.getElementById('notifBtn').classList.remove('active');
+      document.getElementById('notifBtn').innerHTML = '<span class="bell-icon">🔔</span> ENABLE DAILY REMINDERS';
+      showToast('🔕 Reminders turned off');
+      return;
+    }
+
+    Notification.requestPermission().then(perm => {
+      if (perm === 'granted') {
+        notifEnabled = true;
+        document.getElementById('notifBtn').classList.add('active');
+        document.getElementById('notifBtn').innerHTML = '<span class="bell-icon">🔔</span> REMINDERS ACTIVE';
+
+        // Fire one immediately
+        fireNotification();
+
+        // Then every 24hrs (for demo: every 30 seconds tick)
+        notifInterval = setInterval(fireNotification, 86400000);
+
+        showToast('✔ Daily reminders enabled!');
+      } else {
+        showToast('⚠ Please allow notifications in browser');
+      }
+    });
+  }
+
+  function fireNotification() {
+    const targetStr = getTargetDate();
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    let daysLeft = '?';
+    if (targetStr) {
+      const target = new Date(targetStr);
+      daysLeft = Math.max(0, Math.ceil((target - tomorrow) / (1000*60*60*24)));
+    }
+
+    const idx = Math.floor(Date.now() / 86400000) % AFFIRMATIONS.length;
+
+    new Notification('🏔 HIMALAYAN 450 — DAILY REMINDER', {
+      body: `${daysLeft} days to go!\n"${AFFIRMATIONS[idx]}"`,
+      icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Royal_Enfield_logo.svg/200px-Royal_Enfield_logo.svg.png',
+      badge: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Royal_Enfield_logo.svg/64px-Royal_Enfield_logo.svg.png'
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Init
+  updateDate();
+  updateCounter();
+
+  // Restore saved date in input
+  const saved = getTargetDate();
+  if (saved) document.getElementById('targetDate').value = saved;
+
+  // Set min date to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  document.getElementById('targetDate').min = tomorrow.toISOString().split('T')[0];
+
+  // Live clock tick
+  setInterval(updateDate, 60000);
+</script>
+</body>
+</html>
